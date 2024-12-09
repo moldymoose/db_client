@@ -1,0 +1,49 @@
+CREATE TABLE db_brand (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE db_user (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Firstname VARCHAR(100) NOT NULL,
+    Lastname VARCHAR(100) NOT NULL,
+    PhoneNum VARCHAR(20) NULL,
+    Address VARCHAR(255) NOT NULL,
+    City VARCHAR(100) NOT NULL,
+    State VARCHAR(100) NOT NULL,
+    Zip INT NOT NULL,
+	Active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE db_discount (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Description VARCHAR(255) NOT NULL,
+    Amount DECIMAL(10, 2) NOT NULL CHECK (Amount >= 0)
+);
+
+CREATE TABLE db_transaction (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    Date DATETIME NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES db_user(ID)
+);
+
+CREATE TABLE db_product (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    BrandID INT NOT NULL,
+    ProductName VARCHAR(255) NOT NULL,
+    Description VARCHAR(255) NULL,
+    Price DECIMAL(10, 2) NOT NULL CHECK (Price > 0),
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (BrandID) REFERENCES db_brand(ID)
+);
+
+CREATE TABLE db_lineitem (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductID INT NOT NULL,
+    TransactionID INT NOT NULL,
+    DiscountID INT NULL,
+    FOREIGN KEY (ProductID) REFERENCES db_product(ID),
+    FOREIGN KEY (TransactionID) REFERENCES db_transaction(ID),
+    FOREIGN KEY (DiscountID) REFERENCES db_discount(ID)
+);
