@@ -16,6 +16,7 @@ public class AdminMenu {
         int choice = -1;
 
         while (choice != 3) {
+            System.out.print("\n");
             System.out.println("Admin Menu:");
             System.out.println("1. Print All Users");
             System.out.println("2. Print All Products");

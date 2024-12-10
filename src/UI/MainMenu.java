@@ -9,6 +9,7 @@ public class MainMenu {
         int choice = -1;
 
         while (choice != 3) {
+            System.out.print("\n");
             System.out.println("Main Menu:");
             System.out.println("1. Customer Menu");
             System.out.println("2. Admin Menu");

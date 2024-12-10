@@ -11,6 +11,7 @@ public class PrintUtility {
 
     //defaults to get entire list of products
     public static void printProductList() {
+        System.out.print("\n");
         // Fetch and print all products
         ProductDAO productDAO = new ProductDAO();
         List<Product> products = productDAO.readAll();
@@ -33,6 +34,7 @@ public class PrintUtility {
 
     //Overloading to print a specific list of products
     public static void printProductList(List<Product> products) {
+        System.out.print("\n");
         if (products.isEmpty()) {
             System.out.println("No products available.");
             return;
@@ -50,6 +52,7 @@ public class PrintUtility {
     }
 
     public static void printUserList(List<User> users) {
+        System.out.print("\n");
         if (users.isEmpty()) {
             System.out.println("No users found.");
             return;
@@ -69,6 +72,7 @@ public class PrintUtility {
     }
 
     public static void printDiscountList(List<Discount> discounts) {
+        System.out.print("\n");
         if (discounts.isEmpty()) {
             System.out.println("No discounts available.");
             return;

@@ -7,8 +7,7 @@ public class LineItem {
     private Integer discountId; //Interger class allows for null value
 
     //Constructor method
-    public LineItem(int id, int productId, int transactionId, Integer discountId) {
-        this.id = id;
+    public LineItem(int productId, int transactionId, Integer discountId) {
         this.productId = productId;
         this.transactionId = transactionId;
         this.discountId = discountId; //Can be null

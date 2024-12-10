@@ -137,22 +137,4 @@ public class UserDAO extends BaseDAO {
             e.printStackTrace();
         }
     }
-
-    //VALIDATE EXISTENCE
-    public boolean userExists(int userId) {
-        String query = "SELECT COUNT(*) FROM db_user WHERE ID = ?";
-
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, userId);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;  // If count is greater than 0, user exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;  // Default to false if error occurs or no rows are found
-    }
 }

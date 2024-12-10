@@ -31,7 +31,6 @@ public class InputValidator {
 
                 // Validate the ID exists in the database
                 if (isIdExists(tableName, id)) {
-                    System.out.println(entityName + " ID " + id + " exists.");
                     return id;
                 } else {
                     System.out.println(entityName + " ID " + id + " does not exist in the database.");

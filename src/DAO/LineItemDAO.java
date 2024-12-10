@@ -9,20 +9,34 @@ import java.util.List;
 public class LineItemDAO extends BaseDAO {
 
     //CREATE
-    public void create(LineItem lineItem) {
+    public LineItem create(LineItem lineItem) {
         String query = "INSERT INTO db_lineitem (ProductID, TransactionID, DiscountID) VALUES (?, ?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, lineItem.getProductId());
             ps.setInt(2, lineItem.getTransactionId());
-            ps.setInt(3, lineItem.getDiscountId());
+
+            //accounts for possible null discount
+            if (lineItem.getDiscountId() == null) {
+                ps.setNull(3, Types.INTEGER);  // Set NULL if DiscountID is null
+            } else {
+                ps.setInt(3, lineItem.getDiscountId());  // Otherwise set the DiscountID
+            }
+
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int lineItemId = generatedKeys.getInt(1);
+                    lineItem.setId(lineItemId);  // Set the generated ID in the transaction object
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return lineItem;
     }
 
     //READ
@@ -37,7 +51,7 @@ public class LineItemDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                lineItem = new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID"));
+                lineItem = new LineItem(rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID"));
             }
 
         } catch (SQLException e) {
@@ -58,7 +72,7 @@ public class LineItemDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                lineItems.add(new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID")));
+                lineItems.add(new LineItem(rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID")));
             }
 
         } catch (SQLException e) {

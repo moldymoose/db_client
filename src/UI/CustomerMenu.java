@@ -1,9 +1,12 @@
 package UI;
 
+import DAO.LineItemDAO;
 import DAO.ProductDAO;
 import DAO.TransactionDAO;
 import DAO.UserDAO;
+import Utilities.InputValidator;
 import Utilities.PrintUtility;
+import model.LineItem;
 import model.Product;
 import model.Transaction;
 import model.User;
@@ -17,24 +20,14 @@ public class CustomerMenu {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void display() {
-        System.out.println("Enter your User ID: ");
-        int userId = scanner.nextInt();
+        System.out.print("\n");
+        int userId = InputValidator.promptForValidId("db_user", scanner);
+        User user = userDAO.read(userId);
 
-        // Validate if the user exists
-        if (userDAO.userExists(userId)) {
-            User user = userDAO.read(userId);  // Retrieve the full user details
-            if (user != null) {
-                // Welcome the user by first and last name
-                System.out.println("Welcome, " + user.getFirstName() + " " + user.getLastName());
+        System.out.println("\nWelcome, " + user.getFirstName() + " " + user.getLastName());
 
-                // Continue to the next options (e.g., Start Transaction, Update Account)
-                showCustomerOptions(user);
-            } else {
-                System.out.println("Something went wrong retrieving the user.");
-            }
-        } else {
-            System.out.println("User ID not found. Please check your ID or register.");
-        }
+        // Continue to the next options (e.g., Start Transaction, Update Account)
+        showCustomerOptions(user);
     }
 
     public static void showCustomerOptions(User user) {
@@ -44,7 +37,7 @@ public class CustomerMenu {
             System.out.println("1. Start Transaction");
             System.out.println("2. Update Account");
             System.out.println("3. Return to Main Menu");  // Add option to return to main menu
-            System.out.println("Enter your choice: ");
+            System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
 
             switch (choice) {
@@ -65,7 +58,7 @@ public class CustomerMenu {
     }
 
     public static void startTransaction(User user) {
-        System.out.println("Starting a new transaction for " + user.getFirstName() + " " + user.getLastName());
+        System.out.println("\nStarting a new transaction for " + user.getFirstName() + " " + user.getLastName());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis()); //Timestamp for transaction
 
         Transaction transaction = new Transaction(user.getId(), timestamp);
@@ -86,13 +79,15 @@ public class CustomerMenu {
     private static void addLineItem(Scanner scanner, Transaction transaction) {
         PrintUtility.printProductList();
 
-        System.out.println("Enter a product ID to add: ");
-        scanner.nextInt();
+        int productID = InputValidator.promptForValidId("db_product", scanner);
 
         ProductDAO productDAO = new ProductDAO();
-        Product product = productDAO.read(id)
+        Product product = productDAO.read(productID);
 
+        LineItemDAO lineItemDAO = new LineItemDAO();
+        LineItem lineItem = new LineItem(productID, transaction.getId(), null);
 
+        lineItem = lineItemDAO.create(lineItem);
     }
 
     public static void updateAccount(User user) {
