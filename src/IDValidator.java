@@ -8,8 +8,8 @@ public class IDValidator {
         //Selects field from table with ID
         String query = "SELECT * FROM " + table + " WHERE ID = " + id;
         try (Connection connection = DBConnector.getConnection(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query);) {
-            //if statement runs isValid returns true
-            return true;
+            //if statement result set has value the id is valid
+            return (rs.next());
         } catch (SQLException e) {
             System.err.println("Error checking ID: " + e.getMessage());
         }

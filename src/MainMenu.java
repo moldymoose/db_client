@@ -5,7 +5,7 @@ public class MainMenu {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Display menu
+        //Display menu
         while (true) {
             System.out.println("\nMain Menu:");
             System.out.println("1. Start a Transaction");
@@ -13,7 +13,7 @@ public class MainMenu {
             System.out.println("3. Exit");
             System.out.print("Please select an option: ");
             int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
