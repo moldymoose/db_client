@@ -1,8 +1,14 @@
 package UI;
 
+import DAO.ProductDAO;
+import DAO.TransactionDAO;
 import DAO.UserDAO;
+import Utilities.PrintUtility;
+import model.Product;
+import model.Transaction;
 import model.User;
 
+import java.sql.Timestamp;
 import java.util.Scanner;
 
 public class CustomerMenu {
@@ -60,7 +66,33 @@ public class CustomerMenu {
 
     public static void startTransaction(User user) {
         System.out.println("Starting a new transaction for " + user.getFirstName() + " " + user.getLastName());
-        // Transaction logic goes here...
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis()); //Timestamp for transaction
+
+        Transaction transaction = new Transaction(user.getId(), timestamp);
+        TransactionDAO transactionDAO = new TransactionDAO();
+        transaction = transactionDAO.create(transaction);
+
+        System.out.println("Transaction: " + transaction.getId() + " created!");
+
+        transactionLoop(scanner, transaction);
+
+    }
+
+    private static void transactionLoop(Scanner scanner, Transaction transaction) {
+        //add first line item
+        addLineItem(scanner, transaction);
+    }
+
+    private static void addLineItem(Scanner scanner, Transaction transaction) {
+        PrintUtility.printProductList();
+
+        System.out.println("Enter a product ID to add: ");
+        scanner.nextInt();
+
+        ProductDAO productDAO = new ProductDAO();
+        Product product = productDAO.read(id)
+
+
     }
 
     public static void updateAccount(User user) {

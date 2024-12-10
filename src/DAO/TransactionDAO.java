@@ -9,19 +9,27 @@ import java.util.List;
 public class TransactionDAO extends BaseDAO {
 
     //CREATE
-    public void create(Transaction transaction) {
+    public Transaction create(Transaction transaction) {
         String query = "INSERT INTO db_transaction (UserID, Date) VALUES (?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, transaction.getUserId());
             ps.setTimestamp(2, transaction.getDate());
             ps.executeUpdate();
 
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int transactionId = generatedKeys.getInt(1);
+                    transaction.setId(transactionId);  // Set the generated ID in the transaction object
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return transaction;
     }
 
     //READ
@@ -36,7 +44,7 @@ public class TransactionDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                transaction = new Transaction(rs.getInt("ID"), rs.getInt("UserID"), rs.getTimestamp("Date"));
+                transaction = new Transaction(rs.getInt("UserID"), rs.getTimestamp("Date"));
             }
 
         } catch (SQLException e) {
@@ -57,7 +65,7 @@ public class TransactionDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                transactions.add(new Transaction(rs.getInt("ID"), rs.getInt("UserID"), rs.getTimestamp("Date")));
+                transactions.add(new Transaction(rs.getInt("UserID"), rs.getTimestamp("Date")));
             }
 
         } catch (SQLException e) {

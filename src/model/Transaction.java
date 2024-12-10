@@ -8,8 +8,7 @@ public class Transaction {
     private Timestamp date;
 
     //Constructor Method
-    public Transaction(int id, int userId, Timestamp date) {
-        this.id = id;
+    public Transaction(int userId, Timestamp date) {
         this.userId = userId;
         this.date = date;
     }

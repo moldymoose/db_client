@@ -1,5 +1,6 @@
 package Utilities;
 
+import DAO.ProductDAO;
 import model.Discount;
 import model.Product;
 import model.User;
@@ -8,6 +9,29 @@ import java.util.List;
 
 public class PrintUtility {
 
+    //defaults to get entire list of products
+    public static void printProductList() {
+        // Fetch and print all products
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> products = productDAO.readAll();
+
+        if (products.isEmpty()) {
+            System.out.println("No products available.");
+            return;
+        }
+
+        System.out.println("Available Products:");
+        System.out.printf("%-5s %-30s %-10s %-15s\n", "ID", "Product Name", "Price", "Active");
+        System.out.println("-------------------------------------------------------------");
+
+        for (Product product : products) {
+            System.out.printf("%-5d %-30s %-10.2f %-15b\n",
+                    product.getId(), product.getProductName(), product.getPrice(), product.isActive());
+        }
+        System.out.println();
+    }
+
+    //Overloading to print a specific list of products
     public static void printProductList(List<Product> products) {
         if (products.isEmpty()) {
             System.out.println("No products available.");
