@@ -6,10 +6,10 @@ import DAO.TransactionDAO;
 import DAO.UserDAO;
 import Utilities.InputValidator;
 import Utilities.PrintUtility;
-import model.LineItem;
-import model.Product;
-import model.Transaction;
-import model.User;
+import Models.LineItem;
+import Models.Product;
+import Models.Transaction;
+import Models.User;
 
 import java.sql.Timestamp;
 import java.util.Scanner;

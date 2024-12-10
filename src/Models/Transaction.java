@@ -1,4 +1,4 @@
-package model;
+package Models;
 
 import java.sql.Timestamp;
 
@@ -9,6 +9,12 @@ public class Transaction {
 
     //Constructor Method
     public Transaction(int userId, Timestamp date) {
+        this.userId = userId;
+        this.date = date;
+    }
+    //Overloaded with ID value in case constructed from existing row
+    public Transaction(int id, int userId, Timestamp date) {
+        this.id = id;
         this.userId = userId;
         this.date = date;
     }

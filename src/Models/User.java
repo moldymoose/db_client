@@ -1,4 +1,4 @@
-package model;
+package Models;
 
 public class User {
     private int id;
@@ -12,8 +12,18 @@ public class User {
     private boolean active;
 
     //Constructor Method
-    public User(int id, String firstName, String lastName, String phoneNum, String address,
-                String city, String state, int zip, boolean active) {
+    public User(String firstName, String lastName, String phoneNum, String address, String city, String state, int zip, boolean active) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNum = phoneNum;  // Can be null
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.active = active;
+    }
+    //Overloaded with ID value in case constructed from existing row
+    public User(int id, String firstName, String lastName, String phoneNum, String address, String city, String state, int zip, boolean active) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

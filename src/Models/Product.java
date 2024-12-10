@@ -1,4 +1,4 @@
-package model;
+package Models;
 
 public class Product {
     private int id;
@@ -9,6 +9,14 @@ public class Product {
     private boolean active;
 
     //Constructor Method
+    public Product(int brandId, String productName, String description, Float price, boolean active) {
+        this.brandId = brandId;
+        this.productName = productName;
+        this.description = description;
+        this.price = price;
+        this.active = active;
+    }
+    //Overloaded with ID value in case constructed from existing row
     public Product(int id, int brandId, String productName, String description, Float price, boolean active) {
         this.id = id;
         this.brandId = brandId;

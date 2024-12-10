@@ -3,7 +3,7 @@ package Utilities;
 import DAO.DiscountDAO;
 import DAO.LineItemDAO;
 import DAO.ProductDAO;
-import model.*;
+import Models.*;
 
 import java.util.List;
 

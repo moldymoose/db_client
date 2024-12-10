@@ -1,7 +1,7 @@
 package DAO;
 
-import model.LineItem;
-import model.Transaction;
+import Models.LineItem;
+import Models.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ public class LineItemDAO extends BaseDAO {
 
     //CREATE
     public LineItem create(LineItem lineItem) {
+        //LineItem object comes name but no ID.  Prepared statement inserts new row with details and returns generated key.
         String query = "INSERT INTO db_lineitem (ProductID, TransactionID, DiscountID) VALUES (?, ?, ?)";
 
         try (Connection conn = getConnection();
@@ -19,19 +20,20 @@ public class LineItemDAO extends BaseDAO {
             ps.setInt(1, lineItem.getProductId());
             ps.setInt(2, lineItem.getTransactionId());
 
-            //accounts for possible null discount
+            //Accounts for possible null discount
             if (lineItem.getDiscountId() == null) {
-                ps.setNull(3, Types.INTEGER);  // Set NULL if DiscountID is null
+                ps.setNull(3, Types.INTEGER); //Set db field null
             } else {
-                ps.setInt(3, lineItem.getDiscountId());  // Otherwise set the DiscountID
+                ps.setInt(3, lineItem.getDiscountId()); //Sets discount ID if not null
             }
 
             ps.executeUpdate();
 
+            //Generated key is placed in result set and assigned to the ID of the lineItem object
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int lineItemId = generatedKeys.getInt(1);
-                    lineItem.setId(lineItemId);  // Set the generated ID in the transaction object
+                    lineItem.setId(lineItemId);
                 }
             }
         } catch (SQLException e) {
@@ -45,14 +47,13 @@ public class LineItemDAO extends BaseDAO {
         String query = "SELECT * FROM db_lineitem WHERE ID = ?";
         LineItem lineItem = null;
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                lineItem = new LineItem(rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID"));
+                lineItem = new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID"));
             }
 
         } catch (SQLException e) {
@@ -64,17 +65,19 @@ public class LineItemDAO extends BaseDAO {
 
     //READ ALL FROM SPECIFIED TRANSACTION
     public List<LineItem> readAll(Transaction transaction) {
+        //Query selects all from table based on transaction ID from transaction object in parameters
         String query = "SELECT * FROM db_lineitem WHERE TransactionID = ?";
         List<LineItem> lineItems = new ArrayList<>();
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, transaction.getId());
 
+            //List of rows is stored in result set
             ResultSet rs = ps.executeQuery();
 
+            //iterates through result set and creates new lineItem object to populate list
             while (rs.next()) {
-                lineItems.add(new LineItem(rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID")));
+                lineItems.add(new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID")));
             }
 
         } catch (SQLException e) {

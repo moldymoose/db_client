@@ -1,6 +1,6 @@
 package DAO;
 
-import model.Transaction;
+import Models.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class TransactionDAO extends BaseDAO {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int transactionId = generatedKeys.getInt(1);
-                    transaction.setId(transactionId);  // Set the generated ID in the transaction object
+                    transaction.setId(transactionId);
                 }
             }
         } catch (SQLException e) {

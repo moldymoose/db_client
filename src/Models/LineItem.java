@@ -1,16 +1,28 @@
-package model;
+package Models;
 
 public class LineItem {
     private int id;
     private int productId;
     private int transactionId;
-    private Integer discountId; //Interger class allows for null value
+    private Integer discountId = null; //Interger class allows for null value
 
     //Constructor method
     public LineItem(int productId, int transactionId, Integer discountId) {
         this.productId = productId;
         this.transactionId = transactionId;
         this.discountId = discountId; //Can be null
+    }
+    //Overloaded with ID value in case constructed from existing row
+    public LineItem(int id, int productId, int transactionId, Integer discountId) {
+        this.id = id;
+        this.productId = productId;
+        this.transactionId = transactionId;
+        this.discountId = discountId; //Can be null
+    }
+    //Overloading for constructing with no discount
+    public LineItem(int productId, int transactionId) {
+        this.productId = productId;
+        this.transactionId = transactionId;
     }
 
     //Getters and Setters

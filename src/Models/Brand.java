@@ -1,10 +1,14 @@
-package model;
+package Models;
 
 public class Brand {
     private int id;
     private String name;
 
     //Constructor Method
+    public Brand(String name) {
+        this.name = name;
+    }
+    //Overloaded with ID value in case constructed from existing row
     public Brand(int id, String name) {
         this.id = id;
         this.name = name;

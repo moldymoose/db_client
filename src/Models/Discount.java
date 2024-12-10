@@ -1,4 +1,4 @@
-package model;
+package Models;
 
 public class Discount {
     private int id;
@@ -6,6 +6,11 @@ public class Discount {
     private Float amount;
 
     //Constructor Method
+    public Discount(String description, Float amount) {
+        this.description = description;
+        this.amount = amount;
+    }
+    //Overloaded with ID value in case constructed from existing row
     public Discount(int id, String description, Float amount) {
         this.id = id;
         this.description = description;

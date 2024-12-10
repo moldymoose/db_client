@@ -1,6 +1,6 @@
 package DAO;
 
-import model.User;
+import Models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,11 +9,11 @@ import java.util.List;
 public class UserDAO extends BaseDAO {
 
     //CREATE
-    public void create(User user) {
+    public User create(User user) {
         String query = "INSERT INTO db_user (Firstname, Lastname, PhoneNum, Address, City, State, Zip, Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
@@ -25,9 +25,16 @@ public class UserDAO extends BaseDAO {
             ps.setBoolean(8, user.isActive());
             ps.executeUpdate();
 
+            try(ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    int userId = generatedKeys.getInt(1);
+                    user.setId(userId);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return user;
     }
 
     //READ

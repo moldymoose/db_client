@@ -3,8 +3,8 @@ package UI;
 import DAO.ProductDAO;
 import DAO.UserDAO;
 import Utilities.PrintUtility;
-import model.Product;
-import model.User;
+import Models.Product;
+import Models.User;
 
 import java.util.List;
 import java.util.Scanner;

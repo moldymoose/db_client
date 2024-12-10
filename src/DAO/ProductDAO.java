@@ -1,6 +1,6 @@
 package DAO;
 
-import model.Product;
+import Models.Product;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,11 +9,11 @@ import java.util.List;
 public class ProductDAO extends BaseDAO {
 
     //CREATE
-    public void create(Product product) {
+    public Product create(Product product) {
         String query = "INSERT INTO db_product (BrandID, ProductName, Description, Price, Active) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, product.getBrandId());
             ps.setString(2, product.getProductName());
@@ -22,9 +22,17 @@ public class ProductDAO extends BaseDAO {
             ps.setBoolean(5, product.isActive());
             ps.executeUpdate();
 
+            try(ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    int productId = generatedKeys.getInt(1);
+                    product.setId(productId);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return product;
     }
 
     //READ
@@ -105,23 +113,5 @@ public class ProductDAO extends BaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    //VALIDATE EXISTENCE
-    public boolean productExists(int id) {
-        String query = "SELECT COUNT(*) FROM db_product WHERE ID = ? AND Active = TRUE";  // Optionally check if product is active
-
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, id);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;  // If count is greater than 0, product exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;  // Default to false if error occurs or no rows are found
     }
 }
