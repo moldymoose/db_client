@@ -74,6 +74,33 @@ public class CustomerMenu {
     private static void transactionLoop(Scanner scanner, Transaction transaction) {
         //add first line item
         addLineItem(scanner, transaction);
+
+        int choice = -1;
+
+        while(choice != 3) {
+            PrintUtility.printTransaction(transaction);
+
+            System.out.print("\n");
+            System.out.println("Cart Options");
+            System.out.println("1: Add Item");
+            System.out.println("2: Remove Item");
+            System.out.println("3: Checkout");
+
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addLineItem(scanner, transaction);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    System.out.println("Invalid!");
+                    break;
+            }
+        }
     }
 
     private static void addLineItem(Scanner scanner, Transaction transaction) {

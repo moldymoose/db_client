@@ -1,6 +1,7 @@
 package DAO;
 
 import model.LineItem;
+import model.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,13 +62,14 @@ public class LineItemDAO extends BaseDAO {
         return lineItem;
     }
 
-    //READ ALL
-    public List<LineItem> readAll() {
-        String query = "SELECT * FROM db_lineitem";
+    //READ ALL FROM SPECIFIED TRANSACTION
+    public List<LineItem> readAll(Transaction transaction) {
+        String query = "SELECT * FROM db_lineitem WHERE TransactionID = ?";
         List<LineItem> lineItems = new ArrayList<>();
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, transaction.getId());
 
             ResultSet rs = ps.executeQuery();
 

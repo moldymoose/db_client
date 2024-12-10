@@ -1,9 +1,9 @@
 package Utilities;
 
+import DAO.DiscountDAO;
+import DAO.LineItemDAO;
 import DAO.ProductDAO;
-import model.Discount;
-import model.Product;
-import model.User;
+import model.*;
 
 import java.util.List;
 
@@ -86,6 +86,40 @@ public class PrintUtility {
             System.out.printf("%-5d %-30s %-10.2f\n",
                     discount.getId(), discount.getDescription(), discount.getAmount());
         }
+        System.out.println();
+    }
+
+    public static void printTransaction(Transaction transaction) {
+        LineItemDAO lineItemDAO = new LineItemDAO();
+        ProductDAO productDAO = new ProductDAO();
+        DiscountDAO discountDAO = new DiscountDAO();
+
+        List<LineItem> lineItems = lineItemDAO.readAll(transaction);
+
+        if (lineItems.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+
+        System.out.println("Shopping Cart:");
+        System.out.printf("%-5s %-30s %-15s %-15s %-15s\n", "ID", "Product", "Price", "Discount", "Total Cost");
+        System.out.println("---------------------------------------------------");
+
+        float cartTotal = 0.0f;
+        for (LineItem lineItem : lineItems) {
+            Product product = productDAO.read(lineItem.getProductId());
+            Discount discount = discountDAO.read(lineItem.getDiscountId());
+
+            float discountValue = 0.0F;
+            if(discount!= null) {
+                discountValue = discount.getAmount();
+            }
+            cartTotal += (product.getPrice() - discountValue);
+            System.out.printf("%-5s %-30s %-15.2f %-15.2f %-15.2f\n", lineItem.getId(), product.getProductName(), product.getPrice(), discountValue, (product.getPrice() - discountValue));
+
+        }
+        System.out.println("---------------------------------------------------");
+        System.out.printf("%-5s %-10.2f\n", "Cart Total:", cartTotal);
         System.out.println();
     }
 }
