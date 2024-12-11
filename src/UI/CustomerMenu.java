@@ -55,7 +55,7 @@ public class CustomerMenu {
         System.out.println("\nStarting a new transaction for " + user.getFirstName() + " " + user.getLastName());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis()); //Timestamp for transaction
 
-        Transaction transaction = new Transaction(user.getId(), timestamp);
+        Transaction transaction = new Transaction(user.getId(), user.getFirstName(), user.getLastName(), timestamp);
         TransactionDAO transactionDAO = new TransactionDAO();
         transaction = transactionDAO.create(transaction);
 

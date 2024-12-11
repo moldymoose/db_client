@@ -34,7 +34,7 @@ public class TransactionDAO extends BaseDAO {
 
     //READ
     public Transaction read(int id) {
-        String query = "SELECT * FROM db_transaction WHERE ID = ?";
+        String query = "SELECT t.ID, t.UserID, t.Date, u.Firstname, u.Lastname FROM db_transaction t JOIN db_user u ON t.UserID = u.ID WHERE t.ID = ?";
         Transaction transaction = null;
 
         try (Connection conn = getConnection();
@@ -44,7 +44,14 @@ public class TransactionDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                transaction = new Transaction(rs.getInt("UserID"), rs.getTimestamp("Date"));
+                //Creating the Transaction object and including User's First and Last Name
+                transaction = new Transaction(
+                        rs.getInt("ID"),
+                        rs.getInt("UserID"),
+                        rs.getString("Firstname"),
+                        rs.getString("Lastname"),
+                        rs.getTimestamp("Date")
+                );
             }
 
         } catch (SQLException e) {
@@ -56,7 +63,7 @@ public class TransactionDAO extends BaseDAO {
 
     //READ ALL
     public List<Transaction> readAll() {
-        String query = "SELECT * FROM db_transaction";
+        String query = "SELECT t.ID, t.UserID, t.Date, u.Firstname, u.Lastname FROM db_transaction t JOIN db_user u ON t.UserID = u.ID ORDER BY t.ID ASC";
         List<Transaction> transactions = new ArrayList<>();
 
         try (Connection conn = getConnection();
@@ -65,7 +72,14 @@ public class TransactionDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                transactions.add(new Transaction(rs.getInt("UserID"), rs.getTimestamp("Date")));
+                //Creating the Transaction object and including User's First and Last Name
+                transactions.add(new Transaction(
+                        rs.getInt("ID"),
+                        rs.getInt("UserID"),
+                        rs.getString("Firstname"),
+                        rs.getString("Lastname"),
+                        rs.getTimestamp("Date")
+                ));
             }
 
         } catch (SQLException e) {

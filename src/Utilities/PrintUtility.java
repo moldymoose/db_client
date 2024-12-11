@@ -119,7 +119,6 @@ public class PrintUtility {
     }
 
     public static void printTransactionList(List<Transaction> transactions) {
-
         if (transactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
@@ -130,16 +129,12 @@ public class PrintUtility {
         System.out.println("----------------------------------------------------------------------------");
 
         for (Transaction transaction : transactions) {
-            // Fetch user details from UserDAO using the userId from the transaction
-            UserDAO userDAO = new UserDAO();
-            User user = userDAO.read(transaction.getUserId());
-
-            // Print transaction details along with user's first and last name
+            // Directly access the user's first and last name from the transaction object
             System.out.printf("%-15d %-25s %-20s %-20s\n",
                     transaction.getId(),
                     transaction.getDate().toString(),  // Print Date/Time
-                    user.getFirstName(), // Handle possible null user
-                    user.getLastName());
+                    transaction.getUserFirstName(), // Directly from the Transaction object
+                    transaction.getUserLastName());  // Directly from the Transaction object
         }
         System.out.println();
     }
