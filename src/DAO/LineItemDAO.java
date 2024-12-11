@@ -44,7 +44,7 @@ public class LineItemDAO extends BaseDAO {
 
     //READ
     public LineItem read(int id) {
-        String query = "SELECT * FROM db_lineitem WHERE ID = ?";
+        String query = "SELECT li.ID AS LineItemID, li.ProductID, p.ProductName, p.Price AS ProductPrice, li.TransactionID, li.DiscountID, IFNULL(d.Amount, 0.00) AS DiscountAmount FROM db_lineitem li JOIN db_product p ON li.ProductID = p.ID LEFT JOIN db_discount d ON li.DiscountID = d.ID WHERE li.ID = ?";
         LineItem lineItem = null;
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
@@ -53,7 +53,7 @@ public class LineItemDAO extends BaseDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                lineItem = new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID"));
+                lineItem = new LineItem(rs.getInt("LineItemID"), rs.getInt("ProductID"), rs.getString("ProductName"), rs.getFloat("ProductPrice"), rs.getInt("TransactionID"), rs.getInt("DiscountID"), rs.getFloat("DiscountAmount"));
             }
 
         } catch (SQLException e) {
@@ -66,7 +66,7 @@ public class LineItemDAO extends BaseDAO {
     //READ ALL FROM SPECIFIED TRANSACTION
     public List<LineItem> readAll(Transaction transaction) {
         //Query selects all from table based on transaction ID from transaction object in parameters
-        String query = "SELECT * FROM db_lineitem WHERE TransactionID = ?";
+        String query = "SELECT li.ID AS LineItemID, li.ProductID, p.ProductName, p.Price AS ProductPrice, li.TransactionID, li.DiscountID, IFNULL(d.Amount, 0.00) AS DiscountAmount FROM db_lineitem li JOIN db_product p ON li.ProductID = p.ID LEFT JOIN db_discount d ON li.DiscountID = d.ID WHERE li.TransactionID = ?";
         List<LineItem> lineItems = new ArrayList<>();
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
@@ -77,7 +77,7 @@ public class LineItemDAO extends BaseDAO {
 
             //iterates through result set and creates new lineItem object to populate list
             while (rs.next()) {
-                lineItems.add(new LineItem(rs.getInt("ID"), rs.getInt("ProductID"), rs.getInt("TransactionID"), rs.getInt("DiscountID")));
+                lineItems.add(new LineItem(rs.getInt("LineItemID"), rs.getInt("ProductID"), rs.getString("ProductName"), rs.getFloat("ProductPrice"), rs.getInt("TransactionID"), rs.getInt("DiscountID"), rs.getFloat("DiscountAmount")));
             }
 
         } catch (SQLException e) {

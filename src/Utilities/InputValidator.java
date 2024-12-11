@@ -14,6 +14,7 @@ public class InputValidator {
         tableNameToPrompt.put("db_user", "User");
         tableNameToPrompt.put("db_product", "Product");
         tableNameToPrompt.put("db_discount", "Discount");
+        tableNameToPrompt.put("db_lineitem", "Line Item");
     }
 
     // Prompt for a valid integer ID with database existence check
@@ -66,6 +67,10 @@ public class InputValidator {
     // Helper method to get a yes/no response
     public static boolean getYesOrNo(Scanner scanner) {
         String input = scanner.nextLine().trim().toLowerCase();
-        return input.equals("y") || input.equals("yes");
+        while(!input.equals("y") && !input.equals("n")) {
+            System.out.println("Invalid input, please enter y/n");
+            input = scanner.nextLine().trim().toLowerCase();
+        }
+        return input.equals("y");
     }
 }

@@ -1,8 +1,6 @@
 package Utilities;
 
-import DAO.DiscountDAO;
-import DAO.LineItemDAO;
-import DAO.ProductDAO;
+import DAO.*;
 import Models.*;
 
 import java.util.List;
@@ -91,8 +89,6 @@ public class PrintUtility {
 
     public static void printTransaction(Transaction transaction) {
         LineItemDAO lineItemDAO = new LineItemDAO();
-        ProductDAO productDAO = new ProductDAO();
-        DiscountDAO discountDAO = new DiscountDAO();
 
         List<LineItem> lineItems = lineItemDAO.readAll(transaction);
 
@@ -101,25 +97,50 @@ public class PrintUtility {
             return;
         }
 
-        System.out.println("Shopping Cart:");
-        System.out.printf("%-5s %-30s %-15s %-15s %-15s\n", "ID", "Product", "Price", "Discount", "Total Cost");
-        System.out.println("---------------------------------------------------");
+        System.out.printf("%-10s %-25s %-15s %-15s %-15s%n", "ID", "Product", "Price", "Discount", "SubTotal");
+        System.out.println("--------------------------------------------------");
 
         float cartTotal = 0.0f;
         for (LineItem lineItem : lineItems) {
-            Product product = productDAO.read(lineItem.getProductId());
-            Discount discount = discountDAO.read(lineItem.getDiscountId());
+            float totalCost = lineItem.getProductPrice() - lineItem.getDiscountAmount();
+            cartTotal += totalCost;
 
-            float discountValue = 0.0F;
-            if(discount!= null) {
-                discountValue = discount.getAmount();
-            }
-            cartTotal += (product.getPrice() - discountValue);
-            System.out.printf("%-5s %-30s %-15.2f %-15.2f %-15.2f\n", lineItem.getId(), product.getProductName(), product.getPrice(), discountValue, (product.getPrice() - discountValue));
-
+            System.out.printf("%-10d %-25s $%-14.2f $%-14.2f $%-14.2f%n",
+                    lineItem.getId(),
+                    lineItem.getProduct(),
+                    lineItem.getProductPrice(),
+                    lineItem.getDiscountAmount(),
+                    totalCost);
         }
-        System.out.println("---------------------------------------------------");
-        System.out.printf("%-5s %-10.2f\n", "Cart Total:", cartTotal);
+
+        // Print Cart Total
+        System.out.println("--------------------------------------------------");
+        System.out.printf("Cart Total: $%-14.2f%n", cartTotal);
+    }
+
+    public static void printTransactionList(List<Transaction> transactions) {
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        System.out.println("Transaction List:");
+        System.out.printf("%-15s %-25s %-20s %-20s\n", "Transaction ID", "Date/Time", "First Name", "Last Name");
+        System.out.println("----------------------------------------------------------------------------");
+
+        for (Transaction transaction : transactions) {
+            // Fetch user details from UserDAO using the userId from the transaction
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.read(transaction.getUserId());
+
+            // Print transaction details along with user's first and last name
+            System.out.printf("%-15d %-25s %-20s %-20s\n",
+                    transaction.getId(),
+                    transaction.getDate().toString(),  // Print Date/Time
+                    user.getFirstName(), // Handle possible null user
+                    user.getLastName());
+        }
         System.out.println();
     }
 }

@@ -1,15 +1,9 @@
 package UI;
 
-import DAO.LineItemDAO;
-import DAO.ProductDAO;
-import DAO.TransactionDAO;
-import DAO.UserDAO;
+import DAO.*;
+import Models.*;
 import Utilities.InputValidator;
 import Utilities.PrintUtility;
-import Models.LineItem;
-import Models.Product;
-import Models.Transaction;
-import Models.User;
 
 import java.sql.Timestamp;
 import java.util.Scanner;
@@ -93,6 +87,7 @@ public class CustomerMenu {
                     addLineItem(scanner, transaction);
                     break;
                 case 2:
+                    removeLineItem(scanner, transaction);
                     break;
                 case 3:
                     break;
@@ -106,19 +101,50 @@ public class CustomerMenu {
     private static void addLineItem(Scanner scanner, Transaction transaction) {
         PrintUtility.printProductList();
 
+        LineItem lineItem = null;
         int productID = InputValidator.promptForValidId("db_product", scanner);
 
         ProductDAO productDAO = new ProductDAO();
         Product product = productDAO.read(productID);
 
         LineItemDAO lineItemDAO = new LineItemDAO();
-        LineItem lineItem = new LineItem(productID, transaction.getId(), null);
 
+        System.out.println("Would you like to apply a discount code? y/n");
+        if(InputValidator.getYesOrNo(scanner)) {
+            System.out.print("Enter your discount code: ");
+            int discountCode = InputValidator.promptForValidId("db_discount", scanner);
+
+            DiscountDAO discountDAO = new DiscountDAO();
+            Discount discount = discountDAO.read(discountCode);
+
+            if(discount.getAmount() < product.getPrice()) {
+                lineItem = new LineItem(product.getId(), product.getProductName(), product.getPrice(), transaction.getId(), discountCode, discount.getAmount());
+            } else {
+                System.out.println("Sorry that code isn't valid.");
+                lineItem = new LineItem(productID, product.getProductName(), product.getPrice(), transaction.getId());
+            }
+        } else {
+            lineItem = new LineItem(productID, product.getProductName(), product.getPrice(), transaction.getId());
+        }
         lineItem = lineItemDAO.create(lineItem);
     }
 
+    public static void removeLineItem(Scanner scanner, Transaction transaction) {
+        int lineItemID = InputValidator.promptForValidId("db_lineitem", scanner);
+        LineItemDAO lineItemDAO = new LineItemDAO();
+        LineItem lineItem = lineItemDAO.read(lineItemID);
+
+        //checks line item transaction id against transaction passed into it.
+        if (lineItem.getTransactionId() == transaction.getId()) {
+            lineItemDAO.delete(lineItemID);
+            System.out.println("Item deleted.");
+        } else {
+            System.out.println("That item number does not match your current transaction.");
+        }
+    }
+
     public static void updateAccount(User user) {
-        // Prompt for new user information
+        //Prompt for new user information
         System.out.println("Updating account for " + user.getFirstName() + " " + user.getLastName());
         scanner.nextLine();  // Consume the leftover newline
 
@@ -140,12 +166,29 @@ public class CustomerMenu {
 
         System.out.print("Enter new zip code (or press Enter to skip): ");
         String zipInput = scanner.nextLine();
-        int zip = user.getZip();  // Default to current zip
-        if (!zipInput.isEmpty()) {
-            zip = Integer.parseInt(zipInput);  // Only change if input is provided
+
+        int zip = user.getZip();  //Default to current zip
+
+        while (!zipInput.isEmpty()) {
+            try {
+                //Try to parse the input as an integer
+                zip = Integer.parseInt(zipInput);
+
+                // Check if the zip code has exactly 5 digits
+                if (zip >= 10000 && zip <= 99999) {
+                    break;  // Valid 5-digit zip code
+                } else {
+                    System.out.print("Invalid zip code. Please enter a valid 5-digit zip code (or press Enter to skip): ");
+                    zipInput = scanner.nextLine();  // Get new input
+                }
+            } catch (NumberFormatException e) {
+                //If the input is not a valid integer, prompt the user again
+                System.out.print("Invalid zip code. Please enter a valid 5-digit zip code (or press Enter to skip): ");
+                zipInput = scanner.nextLine();  // Get new input
+            }
         }
 
-        // Create updated user object and call the DAO update method
+        //Create updated user object and call the DAO update method
         User updatedUser = new User(
                 user.getId(),  // ID remains the same
                 user.getFirstName(),
