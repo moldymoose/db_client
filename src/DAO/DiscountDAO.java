@@ -23,7 +23,7 @@ public class DiscountDAO extends BaseDAO {
             //Generated key is placed in result set and assigned to the ID of the discount object
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    int discountId = generatedKeys.getInt("ID");
+                    int discountId = generatedKeys.getInt(1);
                     discount.setId(discountId);
                 }
             }

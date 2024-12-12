@@ -17,7 +17,11 @@ public class ProductDAO extends BaseDAO {
 
             ps.setInt(1, product.getBrandId());
             ps.setString(2, product.getProductName());
-            ps.setString(3, product.getDescription());
+            if (product.getDescription() == null) {
+                ps.setNull(3,Types.VARCHAR);
+            } else {
+                ps.setString(3, product.getDescription());
+            }
             ps.setFloat(4, product.getPrice());
             ps.setBoolean(5, product.isActive());
             ps.executeUpdate();

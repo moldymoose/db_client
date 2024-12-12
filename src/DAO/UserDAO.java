@@ -17,7 +17,14 @@ public class UserDAO extends BaseDAO {
 
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
-            ps.setString(3, user.getPhoneNum());
+
+            //phone number can be null
+            if (user.getPhoneNum() == null) {
+                ps.setNull(3, Types.VARCHAR);
+            } else {
+                ps.setString(3, user.getPhoneNum());
+            }
+
             ps.setString(4, user.getAddress());
             ps.setString(5, user.getCity());
             ps.setString(6, user.getState());

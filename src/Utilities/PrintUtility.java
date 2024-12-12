@@ -77,11 +77,11 @@ public class PrintUtility {
         }
 
         System.out.println("Discount List:");
-        System.out.printf("%-5s %-30s %-10s\n", "ID", "Description", "Amount");
-        System.out.println("---------------------------------------------------");
+        System.out.printf("%-5s %-50s %-10s\n", "ID", "Description", "Amount");
+        System.out.println("--------------------------------------------------------------");
 
         for (Discount discount : discounts) {
-            System.out.printf("%-5d %-30s %-10.2f\n",
+            System.out.printf("%-5d %-50s %-10.2f\n",
                     discount.getId(), discount.getDescription(), discount.getAmount());
         }
         System.out.println();
@@ -124,7 +124,7 @@ public class PrintUtility {
             return;
         }
 
-        System.out.println("Transaction List:");
+        System.out.println();
         System.out.printf("%-15s %-25s %-20s %-20s\n", "Transaction ID", "Date/Time", "First Name", "Last Name");
         System.out.println("----------------------------------------------------------------------------");
 
