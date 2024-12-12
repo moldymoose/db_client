@@ -6,9 +6,9 @@ public class MainMenu {
 
     public static void display() {
         Scanner scanner = new Scanner(System.in);
-        int choice = -1;
+        String choice = "0";
 
-        while (choice != 3) {
+        while (!choice.equals("3")) {
             System.out.print("\n");
             System.out.println("Main Menu:");
             System.out.println("1. Customer Menu");
@@ -16,16 +16,16 @@ public class MainMenu {
             System.out.println("3. Exit");
 
             System.out.print("Please select an option: ");
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
 
             switch (choice) {
-                case 1:
+                case "1":
                     CustomerMenu.display(); // Direct to Customer Menu
                     break;
-                case 2:
+                case "2":
                     AdminMenu.display(); // Direct to Admin Menu
                     break;
-                case 3:
+                case "3":
                     System.out.println("Exiting application...");
                     break;
                 default:

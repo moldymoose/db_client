@@ -25,23 +25,23 @@ public class CustomerMenu {
     }
 
     public static void showCustomerOptions(User user) {
-        int choice = -1;
+        String choice = "0";
 
-        while (choice != 3) {
+        while (!choice.equals("3")) {
             System.out.println("1. Start Transaction");
             System.out.println("2. Update Account");
             System.out.println("3. Return to Main Menu");  // Add option to return to main menu
             System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
 
             switch (choice) {
-                case 1:
+                case "1":
                     startTransaction(user);
                     break;
-                case 2:
+                case "2":
                     updateAccount(user);
                     break;
-                case 3:
+                case "3":
                     System.out.println("Goodbye.");
                     break;
                 default:
@@ -69,9 +69,9 @@ public class CustomerMenu {
         //add first line item
         addLineItem(scanner, transaction);
 
-        int choice = -1;
+        String choice = "1";
 
-        while(choice != 3) {
+        while(!choice.equals("3")) {
             PrintUtility.printTransaction(transaction);
 
             System.out.print("\n");
@@ -80,19 +80,19 @@ public class CustomerMenu {
             System.out.println("2: Remove Item");
             System.out.println("3: Checkout");
 
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
 
             switch (choice) {
-                case 1:
+                case "1":
                     addLineItem(scanner, transaction);
                     break;
-                case 2:
+                case "2":
                     removeLineItem(scanner, transaction);
                     break;
-                case 3:
+                case "3":
                     break;
                 default:
-                    System.out.println("Invalid!");
+                    System.out.println("Invalid response!");
                     break;
             }
         }
@@ -146,8 +146,6 @@ public class CustomerMenu {
     public static void updateAccount(User user) {
         //Prompt for new user information
         System.out.println("Updating account for " + user.getFirstName() + " " + user.getLastName());
-        scanner.nextLine();  // Consume the leftover newline
-
         System.out.print("Enter new phone number (or press Enter to skip): ");
         String phoneNum = scanner.nextLine();
         if (phoneNum.isEmpty()) phoneNum = user.getPhoneNum();  // No change if empty
